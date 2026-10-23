@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Oro">
+<meta name="theme-color" content="#0A1022">
+<title>Oro</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600&display=swap">
+<style>
+:root{--bg:#F4F6FA;--surface:#FFFFFF;--ink:#101735;--muted:#5C6584;--line:#DDE2EE;--gold:#9A6B00;--goldhi:#D9A21B;--up:#0F7B4F;--down:#B3261E;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0A1022;--surface:#121A35;--ink:#F4EFE2;--muted:#9AA3C2;--line:#222C52;--gold:#F2C14E;--goldhi:#FFE9A8;--up:#5FD9A0;--down:#FF8A80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0A1022;--surface:#121A35;--ink:#F4EFE2;--muted:#9AA3C2;--line:#222C52;--gold:#F2C14E;--goldhi:#FFE9A8;--up:#5FD9A0;--down:#FF8A80;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+main{max-width:480px;margin:0 auto;padding:22px 20px 32px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:18px;font-weight:600;margin:0}
+.badge{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.live .dot{background:var(--up);animation:pulse 1.6s ease-in-out infinite}
+.off .dot{background:var(--down)}
+@keyframes pulse{50%{opacity:.25}}
+.seg{display:flex;gap:4px;margin:26px 0 8px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.seg button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;padding:10px 0;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:600}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.hero{padding:22px 0 4px}
+.label{font-size:13px;color:var(--muted)}
+.price{font-size:clamp(40px,13vw,62px);font-weight:600;line-height:1.1;margin:8px 0 6px;font-variant-numeric:tabular-nums;letter-spacing:-1px;background:linear-gradient(100deg,var(--gold) 20%,var(--goldhi) 50%,var(--gold) 80%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s ease-in-out infinite;overflow-wrap:anywhere}
+@keyframes shine{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+.chg{font-size:15px;font-variant-numeric:tabular-nums;min-height:1.4em}
+.up{color:var(--up)}.down{color:var(--down)}
+.unit{display:inline-flex;gap:14px;margin-top:14px}
+.unit button{border:0;background:none;font:inherit;font-size:13px;color:var(--muted);padding:4px 0;cursor:pointer;border-bottom:2px solid transparent}
+.unit button[aria-pressed="true"]{color:var(--ink);border-color:var(--gold)}
+svg{display:block;width:100%;height:96px;margin:18px 0 8px}
+.rows{margin-top:10px}
+.row{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:inherit;padding:16px 4px;text-align:left;cursor:pointer}
+.row[aria-pressed="true"] .n{color:var(--gold);font-weight:600}
+.row .n{font-size:15px}
+.row .r{text-align:right;font-variant-numeric:tabular-nums}
+.row .p{font-size:16px}
+.row .c{font-size:12px;margin-top:2px;min-height:1.2em}
+footer{margin-top:22px;font-size:12px;line-height:1.6;color:var(--muted)}
+footer a{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.live .dot,.price{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Oro</h1>
+    <div class="badge" id="badge"><span class="dot"></span><span id="status">Conectando…</span></div>
+  </header>
+  <div class="seg" id="seg" role="group" aria-label="Moneda"></div>
+  <section class="hero" aria-live="polite">
+    <div class="label" id="label"></div>
+    <div class="price" id="price">…</div>
+    <div class="chg" id="chg"></div>
+    <div class="unit" id="unit" role="group" aria-label="Unidad"></div>
+  </section>
+  <svg id="spark" viewBox="0 0 300 96" preserveAspectRatio="none" aria-hidden="true"></svg>
+  <div class="rows" id="rows"></div>
+  <footer>
+    Oro (XAU) en dólares: <a href="https://gold-api.com">gold-api.com</a>. Euro y peso colombiano se calculan con la tasa de cambio del día.
+    <a href="https://www.exchangerate-api.com">Rates By Exchange Rate API</a>.
+    Precios de referencia, no son una oferta de compra ni venta.
+  </footer>
+</main>
+<script>
+var GOLD_URL='https://api.gold-api.com/price/XAU',FX_URL='https://open.er-api.com/v6/latest/USD';
+var GOLD_MS=15000,FX_MS=30*60*1000,G=31.1035;
+var CUR={USD:{sym:'US$',dec:2,name:'Dólar estadounidense'},EUR:{sym:'€',dec:2,name:'Euro'},COP:{sym:'$',dec:0,name:'Peso colombiano'}};
+var cur='USD',unit='oz',usd=null,rates=null,hist=[],lastOk=null,failed=false;
+try{var sv=JSON.parse(localStorage.getItem('oro-prefs')||'{}');if(CUR[sv.cur])cur=sv.cur;if(sv.unit==='oz'||sv.unit==='g')unit=sv.unit;}catch(e){}
+function save(){try{localStorage.setItem('oro-prefs',JSON.stringify({cur:cur,unit:unit}))}catch(e){}}
+function val(c){if(usd==null)return null;if(c==='USD')return usd;if(!rates)return null;return usd*rates[c]}
+function k(){return unit==='oz'?1:1/G}
+function f(c,v){return v==null?'—':CUR[c].sym+' '+new Intl.NumberFormat('es-CO',{minimumFractionDigits:CUR[c].dec,maximumFractionDigits:CUR[c].dec}).format(v)}
+function pct(c){
+  if(hist.length<2)return {t:'',cls:''};
+  var a=hist[0][c],b=hist[hist.length-1][c];if(!a||!b)return {t:'',cls:''};
+  var p=(b/a-1)*100;
+  return {t:(p>=0?'▲ ':'▼ ')+Math.abs(p).toFixed(2).replace('.',',')+' %',cls:p>=0?'up':'down'};
+}
+function btn(txt,on,fn){var b=document.createElement('button');b.textContent=txt;b.setAttribute('aria-pressed',on);b.onclick=fn;return b}
+function build(){
+  var seg=document.getElementById('seg');seg.innerHTML='';
+  Object.keys(CUR).forEach(function(c){seg.appendChild(btn(c,c===cur,function(){cur=c;save();build();draw()}))});
+  var u=document.getElementById('unit');u.innerHTML='';
+  u.appendChild(btn('Onza troy',unit==='oz',function(){unit='oz';save();build();draw()}));
+  u.appendChild(btn('Gramo',unit==='g',function(){unit='g';save();build();draw()}));
+}
+function setStatus(){
+  var b=document.getElementById('badge'),s=document.getElementById('status');
+  if(failed){b.className='badge off';s.textContent=lastOk?'Sin conexión · último dato '+hora(lastOk):'Sin conexión';}
+  else if(lastOk){b.className='badge live';s.textContent='En vivo · '+hora(lastOk);}
+  else{b.className='badge';s.textContent='Conectando…';}
+}
+function hora(d){return d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',second:'2-digit'})}
+function draw(){
+  setStatus();
+  var p=pct(cur),v=val(cur);
+  document.getElementById('label').textContent='Oro por '+(unit==='oz'?'onza troy':'gramo')+' en '+CUR[cur].name.toLowerCase();
+  document.getElementById('price').textContent=v==null?'…':f(cur,v*k());
+  var ch=document.getElementById('chg');ch.textContent=p.t?p.t+' desde que abriste la app':'';ch.className='chg '+p.cls;
+  var sp=document.getElementById('spark');
+  if(hist.length>=2){
+    var vals=hist.map(function(h){return h[cur]}),mn=Math.min.apply(0,vals),mx=Math.max.apply(0,vals),rg=(mx-mn)||1;
+    var pts=vals.map(function(x,i){return [(i/(vals.length-1))*300,10+(1-(x-mn)/rg)*72]});
+    var d=pts.map(function(q,i){return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join(' ');
+    sp.innerHTML='<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".28"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0"/></linearGradient></defs><path d="'+d+' L300 96 L0 96 Z" fill="url(#g)"/><path d="'+d+'" fill="none" stroke="var(--gold)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
+  }else sp.innerHTML='';
+  var rows=document.getElementById('rows');rows.innerHTML='';
+  Object.keys(CUR).forEach(function(c){
+    var q=pct(c),x=val(c),b=document.createElement('button');
+    b.className='row';b.setAttribute('aria-pressed',c===cur);
+    b.innerHTML='<span class="n">'+CUR[c].name+'</span><span class="r"><div class="p">'+f(c,x==null?null:x*k())+'</div><div class="c '+q.cls+'">'+q.t+'</div></span>';
+    b.onclick=function(){cur=c;save();build();draw()};
+    rows.appendChild(b);
+  });
+}
+function getJSON(u){return fetch(u,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+function loadFx(){
+  return getJSON(FX_URL).then(function(j){if(j&&j.rates&&j.rates.EUR&&j.rates.COP)rates={EUR:j.rates.EUR,COP:j.rates.COP}}).catch(function(){});
+}
+function loadGold(){
+  return getJSON(GOLD_URL).then(function(j){
+    var p=Number(j.price!=null?j.price:j.priceUsd);
+    if(!isFinite(p))throw new Error('precio inválido');
+    usd=p;failed=false;lastOk=new Date();
+    var e=rates?p*rates.EUR:null,c=rates?p*rates.COP:null;
+    hist.push({USD:p,EUR:e,COP:c});if(hist.length>120)hist.shift();
+  }).catch(function(){failed=true}).then(draw);
+}
+build();draw();
+loadFx().then(loadGold);
+setInterval(loadGold,GOLD_MS);
+setInterval(loadFx,FX_MS);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){loadGold()}});
+</script>
+</body>
+</html>
